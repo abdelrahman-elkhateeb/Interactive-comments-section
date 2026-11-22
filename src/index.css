@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+/* Colors and font from the Frontend Mentor style guide */
+@theme {
+  --font-sans: "Rubik", sans-serif;
+
+  --color-purple-600: hsl(238, 40%, 52%); /* moderate blue: buttons, names, score */
+  --color-purple-200: hsl(239, 57%, 85%); /* light grayish blue: hover / disabled */
+  --color-pink-400: hsl(358, 79%, 66%);   /* soft red: delete */
+  --color-pink-200: hsl(357, 100%, 86%);  /* pale red: delete hover */
+
+  --color-grey-800: hsl(212, 24%, 26%);   /* dark blue: headings */
+  --color-grey-500: hsl(211, 10%, 45%);   /* grayish blue: body text */
+  --color-grey-100: hsl(223, 19%, 93%);   /* light gray: borders */
+  --color-grey-50: hsl(228, 33%, 97%);    /* very light gray: page bg */
+}
+
+body {
+  @apply bg-grey-50 font-sans text-base text-grey-500;
+}
