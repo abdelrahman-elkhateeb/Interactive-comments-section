@@ -44,5 +44,10 @@ export type CommentAction =
     type: "edit";
     content: string;
     id: number;
+  } | {
+    type: "reply";
+    commentId: number;
+    content: string;
+    replyingTo: string;
   }
   ;

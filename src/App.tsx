@@ -28,12 +28,13 @@ function App() {
     <main className="mx-auto flex max-w-[730px] flex-col gap-4 px-4 py-8 md:gap-5 md:py-16">
       {comments.map((comment) => (
         <Fragment key={comment.id}>
-          <CommentItem item={comment} onDelete={setDeleteId} />
+          <CommentItem parentId={comment.id} item={comment} onDelete={setDeleteId} />
 
           {comment.replies.length > 0 && (
             <ReplyList>
               {comment.replies.map((reply) => (
                 <CommentItem
+                  parentId={comment.id}
                   key={reply.id}
                   item={reply}
                   replyingTo={reply.replyingTo}

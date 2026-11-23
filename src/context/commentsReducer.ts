@@ -1,4 +1,4 @@
-import type { AppData, Comment, CommentAction } from "../types";
+import type { AppData, Comment, CommentAction, Reply } from "../types";
 import data from "../data.json"
 
 export function commentReducer(state: Comment[], action: CommentAction): Comment[] {
@@ -24,7 +24,7 @@ export function commentReducer(state: Comment[], action: CommentAction): Comment
 
     case "add": {
       const newComment: Comment = {
-        id: Math.floor(100000 + Math.random() * 900000),
+        id: Date.now(),
         content: action.content,
         score: 0,
         user: currentUser,
@@ -51,6 +51,22 @@ export function commentReducer(state: Comment[], action: CommentAction): Comment
           ...comment, replies: comment.replies.map(reply => action.id === reply.id ? { ...reply, content: action.content } :
             reply)
         })
+    }
+
+    case "reply": {
+      const newReply: Reply = {
+        id: Date.now(),
+        content: action.content,
+        createdAt: "just now",
+        score: 0,
+        replyingTo: action.replyingTo,
+        user: currentUser,
+      }
+
+      return state.map(comment =>
+        comment.id === action.commentId ?
+          { ...comment, replies: [...comment.replies, newReply] }
+          : comment);
     }
   }
 }
