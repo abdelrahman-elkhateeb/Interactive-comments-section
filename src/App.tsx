@@ -1,57 +1,63 @@
+import { Fragment, useState, type FormEvent } from "react";
 import { useComment } from "./context/CommentsContext";
-import CommentCard from "./components/CommentCard";
+import CommentItem from "./components/CommentItem";
 import CommentForm from "./components/CommentForm";
 import ReplyList from "./components/ReplyList";
-
-import { Fragment, useState, type FormEvent } from "react";
-import type { AppData } from "./types";
-import data from "./data.json";
+import DeleteModal from "./components/DeleteModal";
 
 function App() {
-  const usersData: AppData = data;
-  const {
-    currentUser,
-  } = usersData;
+  const { comments, currentUser, dispatch } = useComment();
 
-  const { comments, dispatch } = useComment();
   const [text, setText] = useState("");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
 
   function submitForm(e: FormEvent<HTMLFormElement>) {
-    if (text.trim() === "") return;
     e.preventDefault();
+    if (text.trim() === "") return;
     dispatch({ type: "add", content: text });
-    setText("")
+    setText("");
+  }
+
+  function confirmDelete() {
+    if (deleteId === null) return;
+    dispatch({ type: "delete", id: deleteId });
+    setDeleteId(null);
   }
 
   return (
     <main className="mx-auto flex max-w-[730px] flex-col gap-4 px-4 py-8 md:gap-5 md:py-16">
-      {
-        comments.map(comment =>
-          <Fragment key={comment.id}>
-            <CommentCard
-              item={comment}
-              isOwn={currentUser.username === comment.user.username}
-              onUpvote={() => { dispatch({ type: "vote", id: comment.id, rate: "upvote" }) }}
-              onDownvote={() => { dispatch({ type: "vote", id: comment.id, rate: "downvote" }) }}
-              onDelete={() => { dispatch({ type: "delete", id: comment.id }) }}
-              onEdit={() => { dispatch({ type: "edit", id: comment.id }) }}
-            />
-            {
-              comment.replies.length > 0 && <ReplyList>
-                {comment.replies.map(reply => <CommentCard
-                  key={reply.id} replyingTo={reply.replyingTo}
+      {comments.map((comment) => (
+        <Fragment key={comment.id}>
+          <CommentItem item={comment} onDelete={setDeleteId} />
+
+          {comment.replies.length > 0 && (
+            <ReplyList>
+              {comment.replies.map((reply) => (
+                <CommentItem
+                  key={reply.id}
                   item={reply}
-                  isOwn={currentUser.username === reply.user.username}
-                  onUpvote={() => { dispatch({ type: "vote", id: reply.id, rate: "upvote" }) }}
-                  onDownvote={() => { dispatch({ type: "vote", id: reply.id, rate: "downvote" }) }}
-                  onDelete={() => { dispatch({ type: "delete", id: reply.id }) }}
-                />)}
-              </ReplyList>
-            }
-          </Fragment>)
-      }
-      < CommentForm currentUser={currentUser} value={text} onChange={(e) => { setText(e.target.value) }} onSubmit={submitForm} />
-    </main >
+                  replyingTo={reply.replyingTo}
+                  onDelete={setDeleteId}
+                />
+              ))}
+            </ReplyList>
+          )}
+        </Fragment>
+      ))}
+
+      <CommentForm
+        currentUser={currentUser}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        onSubmit={submitForm}
+      />
+
+      <DeleteModal
+        isOpen={deleteId !== null}
+        onCancel={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+      />
+    </main>
   );
 }
 
