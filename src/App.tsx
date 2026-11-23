@@ -8,6 +8,8 @@ import DeleteModal from "./components/DeleteModal";
 function App() {
   const { comments, currentUser, dispatch } = useComment();
 
+  const sortedComments = comments.toSorted((a, b) => b.score - a.score);
+
   const [text, setText] = useState("");
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -26,7 +28,7 @@ function App() {
 
   return (
     <main className="mx-auto flex max-w-[730px] flex-col gap-4 px-4 py-8 md:gap-5 md:py-16">
-      {comments.map((comment) => (
+      {sortedComments.map((comment) => (
         <Fragment key={comment.id}>
           <CommentItem parentId={comment.id} item={comment} onDelete={setDeleteId} />
 
