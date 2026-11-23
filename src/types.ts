@@ -28,3 +28,21 @@ export type AppData = {
   currentUser: User;
   comments: Comment[];
 }
+
+export type CommentAction =
+  {
+    type: "vote";
+    id: number;
+    rate: "upvote" | "downvote"
+  } | {
+    type: "add";
+    content: string;
+  } | {
+    type: "delete";
+    id: number;
+  } | {
+    type: "edit";
+    content: string;
+    id: number;
+  }
+  ;
