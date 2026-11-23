@@ -17,6 +17,7 @@ function App() {
   const [text, setText] = useState("");
 
   function submitForm(e: FormEvent<HTMLFormElement>) {
+    if (text.trim() === "") return;
     e.preventDefault();
     dispatch({ type: "add", content: text });
     setText("")
