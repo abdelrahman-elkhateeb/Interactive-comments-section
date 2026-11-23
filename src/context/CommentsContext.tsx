@@ -1,8 +1,7 @@
-import { createContext, useContext, useEffect, useReducer, useState, type Dispatch, type ReactNode } from "react";
-import type { Comment, CommentAction, User } from "../types"
-import { commentReducer } from "./commentsReducer";
+import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from "react";
 import data from "../data.json";
-import type { AppData } from "../types";
+import type { AppData, Comment, CommentAction, User } from "../types";
+import { commentReducer } from "./commentsReducer";
 
 type CommentsContextValue = {
   comments: Comment[];
