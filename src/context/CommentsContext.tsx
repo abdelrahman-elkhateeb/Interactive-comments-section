@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, type Dispatch, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useReducer, useState, type Dispatch, type ReactNode } from "react";
 import type { Comment, CommentAction, User } from "../types"
 import { commentReducer } from "./commentsReducer";
 import data from "../data.json";
@@ -13,13 +13,29 @@ type CommentsContextValue = {
 const CommentContext = createContext<CommentsContextValue | null>(null);
 
 const usersData: AppData = data;
+
 const {
   comments: commentsData,
   currentUser,
 } = usersData;
 
+function getInitialComments(): Comment[] {
+  try {
+    const saved = localStorage.getItem('comments');
+    return saved ? JSON.parse(saved) as Comment[] : commentsData;
+
+  } catch (error) {
+    console.error('Failed to parse comments from localStorage:', error);
+    return commentsData;
+  }
+}
+
 export function CommentProvider({ children }: { children: ReactNode }) {
-  const [comments, dispatch] = useReducer(commentReducer, commentsData);
+  const [comments, dispatch] = useReducer(commentReducer, getInitialComments());
+
+  useEffect(() => {
+    localStorage.setItem('comments', JSON.stringify(comments));
+  }, [comments]);
 
   return <CommentContext.Provider value={{ comments, currentUser, dispatch }}>
     {children}
